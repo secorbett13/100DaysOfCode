@@ -27,18 +27,19 @@ namespace SharpDXJohnFalkTutorial
 		private D3D11.VertexShader vertexShader;
 		private D3D11.PixelShader pixelShader;
 
-		private Vector3[] vertices = new Vector3[]
+		private VertexPositionColor[] vertices = new VertexPositionColor[]
 		{
-			new Vector3(-0.5f, 0.5f, 0.0f),
-			new Vector3(0.5f, 0.5f, 0.0f),
-			new Vector3(0.0f, -0.5f, 0.0f)
+			new VertexPositionColor(new Vector3(-0.25f, 0.25f, 0.0f), SharpDX.Color.Red),
+			new VertexPositionColor(new Vector3(0.25f, 0.25f, 0.0f), SharpDX.Color.Green),
+			new VertexPositionColor(new Vector3(0.0f, -0.25f, 0.0f), SharpDX.Color.Blue)
 		};
 
 		private D3D11.Buffer triangleVertexBuffer;
 
 		private D3D11.InputElement[] inputElements = new D3D11.InputElement[]
 		{
-			new D3D11.InputElement("POSITION", 0, Format.R32G32B32_Float, 0)
+			new D3D11.InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, D3D11.InputClassification.PerVertexData, 0),
+			new D3D11.InputElement("COLOR", 0, Format.R32G32B32A32_Float, 12, 0, D3D11.InputClassification.PerVertexData, 0)
 		};
 
 		private ShaderSignature inputSignature;
@@ -156,7 +157,7 @@ namespace SharpDXJohnFalkTutorial
 
 		private void InitializeTriangle()
 		{
-			triangleVertexBuffer = D3D11.Buffer.Create<Vector3>(d3dDevice, D3D11.BindFlags.VertexBuffer, vertices);
+			triangleVertexBuffer = D3D11.Buffer.Create(d3dDevice, D3D11.BindFlags.VertexBuffer, vertices);
 		}
 
 		private void Draw()
@@ -168,7 +169,9 @@ namespace SharpDXJohnFalkTutorial
 			d3dDeviceContext.ClearRenderTargetView(renderTargetView, new SharpDX.Color(32, 103, 178));
 
 			// Set vertex buffere
-			d3dDeviceContext.InputAssembler.SetVertexBuffers(0, new D3D11.VertexBufferBinding(triangleVertexBuffer, Utilities.SizeOf<Vector3>(), 0));
+			d3dDeviceContext.InputAssembler.SetVertexBuffers(
+				0, 
+				new D3D11.VertexBufferBinding(triangleVertexBuffer, Utilities.SizeOf<VertexPositionColor>(), 0));
 
 			// Draw the triangle
 			d3dDeviceContext.Draw(vertices.Count(), 0);
