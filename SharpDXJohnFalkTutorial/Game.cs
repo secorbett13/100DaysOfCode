@@ -162,10 +162,10 @@ namespace SharpDXJohnFalkTutorial
 
 		private void Draw()
 		{
-			// Set the back buffere as teh current render target view
+			// Set the back buffere as the current render target view
 			d3dDeviceContext.OutputMerger.SetRenderTargets(renderTargetView);
 
-			// Clear the screen
+			// Clear the screen and set the background color
 			d3dDeviceContext.ClearRenderTargetView(renderTargetView, new SharpDX.Color(32, 103, 178));
 
 			// Set vertex buffere
