@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using SharpDX;
@@ -14,6 +15,9 @@ namespace SharpDXJohnFalkTutorial
 	public class Game : IDisposable
 	{
 		private RenderForm renderForm;
+
+		// Clock for managing time within the class
+		private Stopwatch clock;
 
 		private const int Width = 1280;
 		private const int Height = 720;
@@ -52,10 +56,14 @@ namespace SharpDXJohnFalkTutorial
 		/// </summary>
 		public Game()
 		{
-			renderForm = new RenderForm("My First SharpDX App");
-			renderForm.ClientSize = new Size(Width, Height);
+			clock = Stopwatch.StartNew();
 
-			renderForm.AllowUserResizing = false;
+			renderForm = new RenderForm("My First SharpDX App")
+			{
+				ClientSize = new Size(Width, Height),
+
+				AllowUserResizing = false
+			};
 
 			InitializeDeviceResources();
 			InitializeShaders();
@@ -167,6 +175,18 @@ namespace SharpDXJohnFalkTutorial
 
 			// Clear the screen and set the background color
 			d3dDeviceContext.ClearRenderTargetView(renderTargetView, new SharpDX.Color(32, 103, 178));
+
+			var time = clock.Elapsed.TotalSeconds;
+			var offset = (float)Math.Sin(time);
+
+			// translate the vertices up and down
+			vertices = new VertexPositionColor[]
+					{
+						new VertexPositionColor(new Vector3(-0.25f, 0.25f + offset, 0.0f), SharpDX.Color.Red),
+						new VertexPositionColor(new Vector3(0.25f, 0.25f + offset, 0.0f), SharpDX.Color.Green),
+						new VertexPositionColor(new Vector3(0.0f, -0.25f + offset, 0.0f), SharpDX.Color.Blue)
+					};
+			triangleVertexBuffer = D3D11.Buffer.Create(d3dDevice, D3D11.BindFlags.VertexBuffer, vertices);
 
 			// Set vertex buffere
 			d3dDeviceContext.InputAssembler.SetVertexBuffers(

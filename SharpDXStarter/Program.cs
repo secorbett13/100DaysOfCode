@@ -17,17 +17,17 @@ namespace SharpDXStarter
 		{
 			var thisForm = new RenderForm("HelloWorld#D12");
 
-			using (var helloTriangle = new HelloWorld())
+			using (var game = new HelloWorld())
 			{
 				thisForm.Show();
-				helloTriangle.Initialize(thisForm);
+				game.Initialize(thisForm);
 
 				using (var loop = new RenderLoop(thisForm))
 				{
 					while(loop.NextFrame())
 					{
-						helloTriangle.Update();
-						helloTriangle.Render();
+						game.Update();
+						game.Render();
 					}
 				}
 			}
